@@ -1,0 +1,58 @@
+name: Gather
+
+on:
+  pull_request:
+  schedule:
+    - cron: "0 1 * * *"
+
+jobs:
+  produce-data:
+    name: ${{ matrix.script }} ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        runner:
+          - ubuntu-26.04-arm
+          - ubuntu-26.04
+        script:
+          #- jay
+          - ccache
+    steps:
+      - name: checkout scripts
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: test ${{ matrix.script }}
+        run: ./${{ matrix.script }}.sh
+
+      - name: rename report
+        run: for f in *.xml; do mv "$f" ${f/.junit./.${{ runner.os }}-${{ runner.arch }}.junit.}; done
+
+      - name: store results
+        uses: actions/upload-artifact@v7
+        with:
+          retention-days: 1
+          if-no-files-found: error
+          archive: false
+          name: ${{ matrix.script }}-${{ runner.os }}-${{ runner.arch }}
+          path: "*.junit.xml"
+
+  gather-data:
+    name: Gather Reports
+    needs: produce-data
+    runs-on: ubuntu-slim
+    steps:
+      - name: download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          merge-multiple: true
+
+      - name: store results
+        uses: actions/upload-artifact@v7
+        with:
+          name: all reports
+          if-no-files-found: error
+          archive: true
+          retention-days: 90
+          path: "*.junit.xml"
