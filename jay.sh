@@ -20,6 +20,6 @@ cat <<EOF > .config/nextest.toml
 path = "junit.xml"
 EOF
 
-cargo nextest run
+cargo nextest run --no-fail-fast || true
 
 mv "target/nextest/default/junit.xml" "../jay.${SHA}.junit.xml"

@@ -12,4 +12,4 @@ cmake -B build_ccache -S ccache -GNinja
 
 cmake --build build_ccache
 
-ctest --output-junit "`pwd`/ccache.${SHA}.junit.xml" --test-dir build_ccache
+ctest --output-junit "`pwd`/ccache.${SHA}.junit.xml" --test-dir build_ccache || true
