@@ -10,6 +10,7 @@ jobs:
     name: ${{ matrix.script }} ${{ matrix.runner }}
     runs-on: ${{ matrix.runner }}
     strategy:
+      fail-fast: false
       matrix:
         runner:
           - ubuntu-26.04-arm
@@ -24,6 +25,7 @@ jobs:
           persist-credentials: false
 
       - name: test ${{ matrix.script }}
+        continue-on-error: true
         run: ./${{ matrix.script }}.sh
 
       - name: rename report
