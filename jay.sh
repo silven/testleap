@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-sudo apt install libfontconfig-dev libinput-dev libcairo2-dev libpango1.0-dev libgbm-dev
+sudo apt update
+sudo apt install -yqq libfontconfig-dev libinput-dev libcairo2-dev libpango1.0-dev libgbm-dev
 
 [[ -d jay ]] && rm -rf jay
 
