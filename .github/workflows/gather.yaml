@@ -19,6 +19,9 @@ jobs:
           - jay
           - ccache
     steps:
+      - name: Rustup
+        run: rustup update
+
       - name: checkout scripts
         uses: actions/checkout@v7
         with:
@@ -41,6 +44,7 @@ jobs:
 
   gather-data:
     name: Gather Reports
+    if: always()
     needs: produce-data
     runs-on: ubuntu-slim
     steps:
