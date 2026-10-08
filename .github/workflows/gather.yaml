@@ -10,6 +10,7 @@ jobs:
     name: ${{ matrix.script }} ${{ matrix.runner }}
     runs-on: ${{ matrix.runner }}
     strategy:
+      fail-fast: false
       matrix:
         runner:
           - ubuntu-26.04-arm
@@ -18,6 +19,9 @@ jobs:
           - jay
           - ccache
     steps:
+      - name: Rustup
+        run: rustup update
+
       - name: checkout scripts
         uses: actions/checkout@v7
         with:
@@ -39,6 +43,7 @@ jobs:
 
   gather-data:
     name: Gather Reports
+    if: always()
     needs: produce-data
     runs-on: ubuntu-slim
     steps:
